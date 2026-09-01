@@ -1,0 +1,73 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function userExists() {
+      return isAuthenticated() && userDoc().data != null;
+    }
+
+    function getUserRole() {
+      return userDoc().data.role;
+    }
+
+    function isAdmin() {
+      return userExists() && getUserRole() == 'admin';
+    }
+
+    function isClient() {
+      return userExists() && getUserRole() == 'client';
+    }
+
+    // Perfis provisionados apenas via Admin SDK (script seed)
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create, update, delete: if false;
+    }
+
+    // Gestão comercial — somente admin
+    match /clients/{documentId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /purchases/{documentId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /participants/{documentId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /campaigns/{documentId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Cashback — cliente lê o próprio; admin gerencia tudo
+    match /cashback/{documentId} {
+      allow read: if isAdmin() || (isClient() && resource.data.userId == request.auth.uid);
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Integrações e configurações do sistema
+    match /integrations/{documentId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /settings/{documentId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,95 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Montserrat', 'Inter', system-ui, sans-serif;
+
+  /* Grupo SM Autopeças */
+  --color-brand-50: #fef2f2;
+  --color-brand-100: #fee2e2;
+  --color-brand-200: #fecaca;
+  --color-brand-300: #fca5a5;
+  --color-brand-400: #f87171;
+  --color-brand-500: #e31b23;
+  --color-brand-600: #d32121;
+  --color-brand-700: #b91c1c;
+
+  --color-navy-50: #eef2ff;
+  --color-navy-100: #e0e7ff;
+  --color-navy-500: #1a2b5f;
+  --color-navy-600: #152349;
+  --color-navy-700: #0f1a38;
+  --color-navy-800: #0c1529;
+  --color-navy-900: #080f1c;
+
+  --color-logo-bar-light: #eaeaea;
+  --color-logo-bar-dark: #1a2b5f;
+
+  --color-sidebar: #1a2b5f;
+  --color-sidebar-hover: #243a75;
+  --color-sidebar-active: #1e3268;
+  --color-sidebar-border: #243a75;
+
+  --color-surface: #f4f6f9;
+  --color-surface-card: #ffffff;
+  --color-border: #e2e8f0;
+
+  --color-dark-bg: #2d3748;
+  --color-dark-surface: #3d4f63;
+  --color-dark-card: #4a5d73;
+
+  --color-success-50: #f0fdf4;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+
+  --color-warning-50: #fffbeb;
+  --color-warning-500: #f59e0b;
+
+  --color-danger-50: #fef2f2;
+  --color-danger-500: #ef4444;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply min-h-screen bg-surface font-sans text-slate-900 antialiased dark:bg-dark-bg dark:text-slate-100;
+  }
+
+  * {
+    @apply border-border dark:border-slate-600;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+
+  .dark .scrollbar-thin {
+    scrollbar-color: #64748b transparent;
+  }
+}
+
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    fill 0.35s ease,
+    stroke 0.35s ease,
+    box-shadow 0.35s ease !important;
+}
