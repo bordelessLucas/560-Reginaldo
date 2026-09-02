@@ -1,18 +1,33 @@
 /**
  * Rótulos de exibição do status do cashback.
- * Não calcula valores — apenas reflete o cadastro atual do cliente.
+ * Reflete a configuração do cliente no Acelera Clube.
  */
 export function getCashbackDisplayStatus(aceleraClube = {}) {
   const participatesInProgram = Boolean(aceleraClube.participatesInProgram)
   const cashbackEnabled = Boolean(aceleraClube.cashbackEnabled)
 
   if (!participatesInProgram) {
-    return { label: 'Não participante', variant: 'default' }
+    return {
+      key: 'not_participant',
+      label: 'Não participante',
+      variant: 'default',
+      eligible: false,
+    }
   }
 
   if (!cashbackEnabled) {
-    return { label: 'Participante · Cashback inativo', variant: 'warning' }
+    return {
+      key: 'inactive',
+      label: 'Participante · Cashback inativo',
+      variant: 'warning',
+      eligible: false,
+    }
   }
 
-  return { label: 'Participante · Cashback ativo', variant: 'success' }
+  return {
+    key: 'active',
+    label: 'Participante · Cashback ativo',
+    variant: 'success',
+    eligible: true,
+  }
 }

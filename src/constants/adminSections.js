@@ -1,6 +1,7 @@
 export const ADMIN_SECTIONS = {
   OVERVIEW: 'visao',
   CLIENTS: 'clientes',
+  PURCHASES: 'compras',
   CASHBACK: 'cashback',
 }
 

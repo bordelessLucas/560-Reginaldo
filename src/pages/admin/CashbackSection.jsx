@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import CashbackRulesPanel from '../../components/admin/CashbackRulesPanel'
 import Badge from '../../components/ui/Badge'
 import Card from '../../components/ui/Card'
 import { COLLECTIONS } from '../../constants/collections'
@@ -41,7 +42,10 @@ export default function CashbackSection() {
   }, [clients, filter, search])
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      <CashbackRulesPanel />
+
+      <div className="space-y-4">
       <p className="text-sm text-slate-500 dark:text-slate-400">
         Situação do cashback e participação no Acelera Clube por cliente.
       </p>
@@ -149,6 +153,7 @@ export default function CashbackSection() {
           </div>
         )}
       </Card>
+      </div>
     </div>
   )
 }

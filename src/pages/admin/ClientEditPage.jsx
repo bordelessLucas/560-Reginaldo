@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import ClientCashbackHistory from '../../components/admin/ClientCashbackHistory'
 import ClientCashbackSection from '../../components/admin/ClientCashbackSection'
 import Card, { CardHeader } from '../../components/ui/Card'
+import { CASHBACK_RULE_DOC_ID } from '../../constants/cashback'
 import { COLLECTIONS } from '../../constants/collections'
 import { useDocument } from '../../hooks/useFirestore'
+import { ensureCashbackRule } from '../../services/cashbackRules'
 import { updateDocument } from '../../services/firestore'
 import { formatCpf, formatPhone, isValidCpf, isValidPhone } from '../../utils/masks'
 import { ADMIN_SECTIONS, getAdminDashboardPath } from '../../constants/adminSections'
@@ -12,6 +15,7 @@ import { inputClassName } from '../../components/ui/inputStyles'
 const defaultAceleraClube = {
   participatesInProgram: false,
   cashbackEnabled: false,
+  cashbackRuleId: CASHBACK_RULE_DOC_ID,
 }
 
 export default function ClientEditPage() {
@@ -26,9 +30,16 @@ export default function ClientEditPage() {
     phone: '',
     aceleraClube: defaultAceleraClube,
   })
+  const [ruleName, setRuleName] = useState('')
   const [formError, setFormError] = useState('')
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    ensureCashbackRule()
+      .then((rule) => setRuleName(rule.name))
+      .catch(() => setRuleName(''))
+  }, [])
 
   useEffect(() => {
     if (!client) return
@@ -41,6 +52,7 @@ export default function ClientEditPage() {
       aceleraClube: {
         ...defaultAceleraClube,
         ...client.aceleraClube,
+        cashbackRuleId: client.aceleraClube?.cashbackRuleId || CASHBACK_RULE_DOC_ID,
       },
     })
   }, [client])
@@ -69,11 +81,11 @@ export default function ClientEditPage() {
       return
     }
 
+    const participatesInProgram = Boolean(form.aceleraClube.participatesInProgram)
     const aceleraClube = {
-      participatesInProgram: Boolean(form.aceleraClube.participatesInProgram),
-      cashbackEnabled: form.aceleraClube.participatesInProgram
-        ? Boolean(form.aceleraClube.cashbackEnabled)
-        : false,
+      participatesInProgram,
+      cashbackEnabled: participatesInProgram ? Boolean(form.aceleraClube.cashbackEnabled) : false,
+      cashbackRuleId: CASHBACK_RULE_DOC_ID,
     }
 
     setSaving(true)
@@ -106,7 +118,10 @@ export default function ClientEditPage() {
     return (
       <div className="mx-auto max-w-3xl space-y-4 text-center">
         <p className="text-sm text-danger-500">Cliente não encontrado.</p>
-        <Link to={getAdminDashboardPath(ADMIN_SECTIONS.CLIENTS)} className="text-sm font-medium text-brand-600 hover:text-brand-700">
+        <Link
+          to={getAdminDashboardPath(ADMIN_SECTIONS.CLIENTS)}
+          className="text-sm font-medium text-brand-600 hover:text-brand-700"
+        >
           Voltar para clientes
         </Link>
       </div>
@@ -203,12 +218,15 @@ export default function ClientEditPage() {
           <ClientCashbackSection
             value={form.aceleraClube}
             disabled={saving}
+            ruleName={ruleName}
             onChange={(aceleraClube) => {
               setForm((current) => ({ ...current, aceleraClube }))
               setSuccess(false)
             }}
           />
         </Card>
+
+        <ClientCashbackHistory clientId={id} />
 
         <div className="flex justify-end gap-3">
           <button

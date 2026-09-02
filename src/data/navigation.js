@@ -5,7 +5,7 @@ export const navigation = [
       { id: 'dashboard', label: 'Dashboard', path: '/admin', icon: 'dashboard', roles: ['admin'] },
       { id: 'dashboard-client', label: 'Dashboard', path: '/dashboard', icon: 'dashboard', roles: ['client'] },
       { id: 'clientes', label: 'Clientes', path: '/admin', section: 'clientes', icon: 'users', roles: ['admin'] },
-      { id: 'compras', label: 'Compras', path: '#', icon: 'shopping', badge: 'Em breve', roles: ['admin'] },
+      { id: 'compras', label: 'Compras', path: '/admin', section: 'compras', icon: 'shopping', roles: ['admin'] },
     ],
   },
   {

@@ -5,18 +5,20 @@ import Card from '../components/ui/Card'
 import CashbackSection from './admin/CashbackSection'
 import ClientEditPage from './admin/ClientEditPage'
 import ClientsSection from './admin/ClientsSection'
+import PurchasesSection from './admin/PurchasesSection'
 
 const TABS = [
   { id: ADMIN_SECTIONS.OVERVIEW, label: 'Visão geral', icon: 'dashboard' },
   { id: ADMIN_SECTIONS.CLIENTS, label: 'Clientes', icon: 'users' },
+  { id: ADMIN_SECTIONS.PURCHASES, label: 'Compras', icon: 'shopping' },
   { id: ADMIN_SECTIONS.CASHBACK, label: 'Cashback', icon: 'cashback' },
 ]
 
 function OverviewSection() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid gap-4 sm:grid-cols-3">
       <Link to={getAdminDashboardPath(ADMIN_SECTIONS.CLIENTS)}>
-        <Card className="transition-colors hover:border-brand-300 hover:bg-brand-50/30 dark:hover:border-brand-500/40 dark:hover:bg-brand-500/5">
+        <Card className="h-full transition-colors hover:border-brand-300 hover:bg-brand-50/30 dark:hover:border-brand-500/40 dark:hover:bg-brand-500/5">
           <div className="flex items-start gap-4">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-100 text-brand-600 dark:bg-brand-500/20 dark:text-brand-400">
               <Icon name="users" className="h-5 w-5" />
@@ -24,7 +26,23 @@ function OverviewSection() {
             <div>
               <h3 className="font-semibold text-slate-900 dark:text-slate-100">Clientes</h3>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Consultar e editar dados cadastrais dos participantes.
+                Cadastro, consulta e participação no Acelera Clube.
+              </p>
+            </div>
+          </div>
+        </Card>
+      </Link>
+
+      <Link to={getAdminDashboardPath(ADMIN_SECTIONS.PURCHASES)}>
+        <Card className="h-full transition-colors hover:border-brand-300 hover:bg-brand-50/30 dark:hover:border-brand-500/40 dark:hover:bg-brand-500/5">
+          <div className="flex items-start gap-4">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-100 text-brand-600 dark:bg-brand-500/20 dark:text-brand-400">
+              <Icon name="shopping" className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100">Compras</h3>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Registrar compras e notas fiscais vinculadas ao cliente.
               </p>
             </div>
           </div>
@@ -32,7 +50,7 @@ function OverviewSection() {
       </Link>
 
       <Link to={getAdminDashboardPath(ADMIN_SECTIONS.CASHBACK)}>
-        <Card className="transition-colors hover:border-brand-300 hover:bg-brand-50/30 dark:hover:border-brand-500/40 dark:hover:bg-brand-500/5">
+        <Card className="h-full transition-colors hover:border-brand-300 hover:bg-brand-50/30 dark:hover:border-brand-500/40 dark:hover:bg-brand-500/5">
           <div className="flex items-start gap-4">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-100 text-brand-600 dark:bg-brand-500/20 dark:text-brand-400">
               <Icon name="cashback" className="h-5 w-5" />
@@ -40,7 +58,7 @@ function OverviewSection() {
             <div>
               <h3 className="font-semibold text-slate-900 dark:text-slate-100">Cashback</h3>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Verificar situação do cashback e participação no programa.
+                Regras, status por cliente e geração do benefício.
               </p>
             </div>
           </div>
@@ -103,6 +121,7 @@ export default function AdminDashboard() {
 
       {activeSection === ADMIN_SECTIONS.OVERVIEW && <OverviewSection />}
       {activeSection === ADMIN_SECTIONS.CLIENTS && <ClientsSection />}
+      {activeSection === ADMIN_SECTIONS.PURCHASES && <PurchasesSection />}
       {activeSection === ADMIN_SECTIONS.CASHBACK && <CashbackSection />}
     </div>
   )

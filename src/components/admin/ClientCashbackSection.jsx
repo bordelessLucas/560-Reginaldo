@@ -28,30 +28,41 @@ function ToggleField({ id, label, description, checked, onChange, disabled }) {
   )
 }
 
-export default function ClientCashbackSection({ value, onChange, disabled }) {
+export default function ClientCashbackSection({ value, onChange, disabled, ruleName }) {
   const status = getCashbackDisplayStatus(value)
 
   function updateField(field, fieldValue) {
-    onChange({ ...value, [field]: fieldValue })
+    const next = { ...value, [field]: fieldValue }
+
+    if (field === 'participatesInProgram' && !fieldValue) {
+      next.cashbackEnabled = false
+    }
+
+    onChange(next)
   }
 
   return (
     <section>
       <CardHeader
         title="Acelera Clube · Cashback"
-        subtitle="Configuração da assinatura e cashback deste cliente. Regras de cálculo serão definidas posteriormente."
+        subtitle="Define se o cliente participa do clube e se pode gerar cashback nas compras."
       />
 
-      <div className="mb-4 flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 dark:bg-dark-card/60">
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 dark:bg-dark-card/60">
         <span className="text-sm text-slate-600 dark:text-slate-300">Status atual:</span>
         <Badge variant={status.variant}>{status.label}</Badge>
+        {ruleName && (
+          <span className="text-xs text-slate-500 dark:text-slate-400">
+            Regra aplicada: <strong className="text-slate-700 dark:text-slate-200">{ruleName}</strong>
+          </span>
+        )}
       </div>
 
       <div className="space-y-3">
         <ToggleField
           id="participatesInProgram"
-          label="Participação no programa"
-          description="Indica se o cliente participa do Acelera Clube (assinatura)."
+          label="Participação no Acelera Clube"
+          description="Associa formalmente o cliente ao programa (assinatura)."
           checked={Boolean(value.participatesInProgram)}
           disabled={disabled}
           onChange={(checked) => updateField('participatesInProgram', checked)}
@@ -60,7 +71,7 @@ export default function ClientCashbackSection({ value, onChange, disabled }) {
         <ToggleField
           id="cashbackEnabled"
           label="Cashback ativo"
-          description="Ativa ou desativa o cashback para este cliente."
+          description="Permite gerar cashback neste cliente. Sem isso, compras não geram benefício."
           checked={Boolean(value.cashbackEnabled)}
           disabled={disabled || !value.participatesInProgram}
           onChange={(checked) => updateField('cashbackEnabled', checked)}
@@ -69,7 +80,19 @@ export default function ClientCashbackSection({ value, onChange, disabled }) {
 
       {!value.participatesInProgram && (
         <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-          Ative a participação no programa para configurar o cashback.
+          Ative a participação no programa para liberar a configuração de cashback.
+        </p>
+      )}
+
+      {value.participatesInProgram && !value.cashbackEnabled && (
+        <p className="mt-3 text-xs text-warning-500">
+          Cliente participante com cashback inativo — compras não gerarão cashback.
+        </p>
+      )}
+
+      {status.eligible && (
+        <p className="mt-3 text-xs text-success-600">
+          Cliente habilitado. O percentual será definido pela tabela de regras no momento da compra.
         </p>
       )}
     </section>
